@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no,width=device-width" />
+        <title>算法</title>
+        <meta name="author" content="harry"/>
+        <meta name="description" content="使用JS实现各种经典算法">
+        <script src="util.js"></script>
+        <script type="text/javascript" src="vue.js"></script>
+        <style>
+            .section {
+                display: flex;
+                justify-content: flex-start;
+                margin: 20px;
+            }
+            .section label {
+                width: 120px;
+            }
+            * {
+                font-size: 15px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <h2>算法</h2>
+            <div>
+                <form v-on:submit.prevent>
+                    <div class="section">
+                        <label>原数组</label>
+                        <input v-model="origin" type="text" name="origin" />
+                    </div>
+                    <div class="section">
+                        <label>排序方法</label>
+                        <select v-model="selectedOption" name="options">
+                            <option disabled value="">请选择</option>
+                            <option value="bubble">冒泡排序</option>
+                            <option value="selection">选择排序</option>
+                        </select>
+                    </div>
+                    <div class="section">
+                        <input @click="sort"  type="submit" value="sort" />
+                    </div>
+                    <div class="section">
+                        <label>结果</label>
+                        <input v-model="result" type="text" name="result" placeholder="结果" disabled="disabled" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>
+            var app = new Vue({
+                el: "#app",
+                data: {
+                    origin: [],
+                    result: [],
+                    selectedOption: '',
+                },
+                methods: {
+                    sort() {
+                        this.result = this.origin.split(", ").map(item => parseInt(item));
+                        eval("this." + this.selectedOption + "()");
+                    },
+                    selection() {
+                        var indexMin = 0;
+                        for (var i = 0, l = this.result.length; i < l - 1; i++) {
+                            indexMin = i;
+                            for (var j = i; j < l; j++) {
+                                if (this.result[indexMin] > this.result[j]) {
+                                    indexMin = j;
+                                }
+                            }
+                            if (i !== indexMin) {
+                                this._swap(this.result, indexMin, i);
+                            }
+                        }
+                    },
+                    bubble() {
+                        var count = 0;
+                        for (var i = 0, l = this.result.length; i < l; i++) {
+                            count++;
+                            for (var j = 0; j < l - i - 1; j++) {
+                                count++;
+                                if (this.result[j] > this.result[j + 1]) {
+                                    this._swap(this.result, j, j+1)
+                                }
+                            }
+                        }
+                        console.log("count: " + count);
+                    },
+                    _swap(array, index1, index2) {
+                        var temp = array[index1];
+                        array[index1] = array[index2];
+                        array[index2] = temp;
+                    },
+                }
+            })
+        </script>
+    </body>
+</html>
