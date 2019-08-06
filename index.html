@@ -38,6 +38,7 @@
                             <option value="bubble">冒泡排序</option>
                             <option value="selection">选择排序</option>
                             <option value="insertion">插入排序</option>
+                            <option value="merge">归并排序</option>
                         </select>
                     </div>
                     <div class="section">
@@ -54,14 +55,54 @@
             var app = new Vue({
                 el: "#app",
                 data: {
-                    origin: [6, 1, 4, 2],
+                    origin: "8, 7, 6, 5, 4, 3, 2, 1",
                     result: [],
                     selectedOption: '',
                 },
                 methods: {
                     sort() {
+                        if (!this.selectedOption) {
+                            alert("没有选择排序方法!");
+                            return;
+                        }
                         this.result = this.origin.split(", ").map(item => parseInt(item));
                         eval("this." + this.selectedOption + "()");
+                    },
+                    merge() {
+                        var result = this._mergeSortRec(this.result);
+                        return result;
+                    },
+                    _mergeSortRec(array) {
+                        var length = array.length;
+                        if (length === 1) {
+                            return array;
+                        }
+                        var that = this;
+                            mid = Math.floor(length / 2),
+                            left = array.slice(0, mid),
+                            right = array.slice(mid, length);
+                        return that._merge(that._mergeSortRec(left), that._mergeSortRec(right));
+                    },
+                    _merge(left, right) {
+                        var result = [],
+                            il = 0,
+                            ir = 0
+                            leftLength = left.length,
+                            rightLength = right.length;
+                        while(il < leftLength && ir < rightLength) {
+                            if (left[il] > right[ir]) {
+                                result.push(right[ir++]);
+                            } else {
+                                result.push(left[il++]);
+                            }
+                        }
+                        while(il < leftLength) {
+                            result.push(left[il++]);
+                        }
+                        while(ir < rightLength) {
+                            result.push(right[ir++]);
+                        }
+                        return result;
                     },
                     insertion() {
                         var l = this.result.length,
